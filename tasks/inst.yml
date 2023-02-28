@@ -1,0 +1,35 @@
+---
+
+- debug: var=opts_inst
+
+- name: Apt setup & install
+  when: opts_inst is defined
+  block:
+  - name: apt keyservers
+    when: opts_inst.servers is defined 
+    loop: "{{opts_inst.servers}}"
+    ansible.builtin.apt_key:
+      keyserver: "{{item.keyserver}}"
+      id: "{{item.id}}"
+
+  - name: apt repos
+    when: opts_inst.repos is defined
+    loop: "{{opts_inst.repos}}"
+    apt_repository:
+      repo: "{{item}}"
+  
+  - name: Apt install
+    when: opts_inst.pkg is defined
+    apt:
+      update_cache: "{{opts_inst.update_cache | default(omit) }}"
+      pkg: "{{opts_inst.pkg}}"
+
+  - name: apt keys
+    when: opts_inst.key_urls is defined
+    loop: "{{opts_inst.key_urls}}"
+    debug: var=item
+    #apt_key: "{{item}}"
+
+  #- name: apt keys
+  #  loop: "{{my_opts_apt.apt.key_ids}}"
+  #  apt_key: "{{item}}"

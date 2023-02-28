@@ -1,0 +1,5 @@
+---
+
+- {name: sources    ,when: opts_apt.sources is defined  ,vars: {opts_sources:   "{{gz_apt_config.sources    | combine(opts_apt.sources,recursive=true) }}"}     ,include_tasks: sources.yml}
+- {name: updates    ,when: opts_apt.updates is defined  ,vars: {opts_updates:   "{{gz_apt_config.updates    | combine(opts_apt.updates,recursive=true) }}"}     ,include_tasks: updates.yml}
+- {name: inst       ,when: opts_apt.inst is defined     ,vars: {opts_inst:      "{{gz_apt_config.inst       | combine(opts_apt.inst,recursive=true) }}"}        ,include_tasks: inst.yml}

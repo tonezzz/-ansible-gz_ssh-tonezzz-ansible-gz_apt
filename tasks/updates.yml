@@ -1,0 +1,28 @@
+---
+
+#I use updates because update seems to be a reserved word.
+#For upgrades, no reason.  I just like it.
+
+- name: Apt updates & upgrades
+  ansible.builtin.apt:
+    update_cache: "{{opts_updates.update_cache | default(true) }}"
+    cache_valid_time: "{{opts_updates.cache_valid_time | default('3600') }}"
+    purge: "{{opts_updates.purge | default(false) }}"
+    autoremove: "{{opts_updates.purge | default(false) }}"
+    upgrade: "{{opts_updates.upgrades | default(false) }}"
+
+- name: Check reboot
+  when: (opts_updates.reboot is defined) and opts_updates.reboot
+  block:
+  - name: Check if a reboot is needed for Debian and Ubuntu boxes
+    register: reboot_required_file
+    stat: path=/var/run/reboot-required get_md5=no
+  - name: Reboot the server
+    when: reboot_required_file.stat.exists
+    reboot:
+      msg: "Reboot initiated by Ansible due to kernel updates"
+      connect_timeout: 5
+      reboot_timeout: 300
+      pre_reboot_delay: 0
+      post_reboot_delay: 30
+      test_command: uptime

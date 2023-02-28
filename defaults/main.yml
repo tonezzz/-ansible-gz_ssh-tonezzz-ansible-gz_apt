@@ -1,0 +1,7 @@
+---
+
+gz_apt_config:
+  sources:
+    dir: /etc/apt/sources.list.d
+  inst: {}
+  updates: {}

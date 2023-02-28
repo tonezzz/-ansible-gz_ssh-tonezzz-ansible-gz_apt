@@ -1,0 +1,11 @@
+---
+
+- debug: var=opts_sources
+
+- name: Apt sources
+  #debug: msg="Not implemented!"
+  loop: "{{opts_sources.files}}"
+  ansible.builtin.copy:
+    dest: "{{opts_sources.path}}"
+    src: "{{item}}"
+    
